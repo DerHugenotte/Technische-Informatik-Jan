@@ -154,9 +154,10 @@ class CustomChatBot:
             for doc in pages_chunked
         ]
 
-        uuids = [str(uuid4()) for _ in range(len(pages_chunked_cleaned[0:100]))]
+# limit von 100 texblöcken entfernen.
+        uuids = [str(uuid4()) for _ in range(len(pages_chunked_cleaned))]
 
-        self.vector_db.add_documents(documents=pages_chunked_cleaned[0:100], ids=uuids)
+        self.vector_db.add_documents(documents=pages_chunked_cleaned, ids=uuids)
 
         logger.info(f"Finished building vector database with {self.client.get_collection(COLLECTION_NAME).count()}")
 
