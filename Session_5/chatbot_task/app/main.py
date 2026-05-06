@@ -69,6 +69,5 @@ if user_query := st.chat_input(placeholder="Ask me anything!"):
 
     with st.chat_message("assistant"):
         with st.spinner("Searching for information in your documents and generation response..."):
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(handle_user_query(user_query))
+            # Sicheres Async-Handling
+            asyncio.run(handle_user_query(user_query))
