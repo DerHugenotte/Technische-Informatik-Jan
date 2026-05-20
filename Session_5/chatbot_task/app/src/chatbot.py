@@ -223,12 +223,15 @@ class CustomChatBot:
         logger.info("Streaming RAG chain response.")
         try:
             async for event in self.qa_rag_chain.astream_events(question, version="v2"):
-                # Task: Filter stream events to get the text chunk and yield it
-                # Hint: filter for event["event"] == "on_chat_model_stream"
-                if event["event"] == "on_chat_model_stream":
+                # Fange die abgerufenen Dokumente ab und sende sie ans Frontend
+                if event["event"] == "on_retriever_end":
+                    yield {"type": "context", "docs": event["data"].get("output", [])}
+                
+                # Sende die normalen Text-Chunks weiter
+                elif event["event"] == "on_chat_model_stream":
                     chunk = event["data"]["chunk"].content
                     if chunk:
-                        yield chunk
+                        yield {"type": "chunk", "content": chunk}
         except Exception as e:
             logger.error(f"Error in stream_answer: {e}", exc_info=True)
             raise
